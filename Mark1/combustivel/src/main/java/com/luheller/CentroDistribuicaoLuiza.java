@@ -127,25 +127,20 @@ public class CentroDistribuicaoLuiza {
 
     }
 
-    public int[] encomendaCombustivel(int qtdadeRecebida, TIPOPOSTO tipoPosto) {
+    public int[] encomendaCombustivel(int qtdadeSolicitada, TIPOPOSTO tipoPosto) {
         int[] resultado = new int[4];
-        // verificar se a quantidade recebida é válida
-        if (qtdadeRecebida <= 0) {// se a quantidade recebida for menor ou igual a zero, ou seja, inválida
-            resultado[0] = -7;
-            return resultado;
-        }
-        // verificar se o tipo do posto é válido
-        if (!tipoPosto.equals(TIPOPOSTO.COMUM) && !tipoPosto.equals(TIPOPOSTO.ESTRATEGICO)) { // se o tipo do posto não for comum nem estratégico
-            resultado[0] = -7; // erro
-            return resultado; // retorna o erro
-        }
-        // verificar se o posto tem combustível suficiente para atender a encomenda
-        int totalAlcool = tAlcool1 + tAlcool2;
-        if (qtdadeRecebida > (tGasolina + tAditivo + totalAlcool)) { // se a quantidade recebida for maior que a soma de todos os combustíveis
-            resultado[0] = -7;
-            return resultado;
+        int pcAditivo = (tAditivo*5)/100;
+        int pcGasolina = (tGasolina*70)/100;
+        int pcAlcoolTotal = ((tAlcool1+tAlcool2)*25)/100;
+        int pcAlcool1 = pcAlcoolTotal/2;
+        int pcAlcool2 = pcAlcoolTotal/2;
+
+        if ((tAditivo > (MAX_ADITIVO*50)/100) && (tGasolina > (MAX_GASOLINA*50)/100) && (tAlcool1 > ((MAX_ALCOOL/2)*50)/100) && (tAlcool2 > ((MAX_ALCOOL/2)*50)/100) && tipoPosto == TIPOPOSTO.COMUM){
+            SITUACAO situacao = SITUACAO.NORMAL;
+            resultado[] = 
+
         }
 
-        return new int[] { qtdadeRecebida, qtdadeRecebida, qtdadeRecebida, qtdadeRecebida };
+        return new int[] { qtdadeSolicitada, qtdadeSolicitada, qtdadeSolicitada, qtdadeSolicitada };
     }
 }
