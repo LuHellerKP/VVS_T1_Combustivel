@@ -1,0 +1,14 @@
+Ter os casos de teste pronto, e fazer casos de teste dos colegas
+driver de teste
+
+Entrega:
+Relatório
+Elaboranmos esses casos, aplicando essas tecnicas, aplicando esse driver em cima dessa classe...
+Contar a história do trabalho.
+Rodamos o do outro grupo... 
+
+Inicio do relatório sobre os casos de teste até quinta. 
+
+Pegar classe dos outros e testar com os nossos testes. 
+
+Não adicionar testes, a menos que seja algo privado. 

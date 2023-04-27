@@ -1,0 +1,4 @@
+# Created at 2023-04-26T20:16:53.067
+Boot Manifest-JAR contains absolute paths in classpath 'D:\PUCRS\2023_1\Verificação e Validação de Software\T1_Combustível\Mark1\combustivel\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+
