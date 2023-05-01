@@ -14,20 +14,33 @@ public class CentroDistribuicaoTest {
     void setUp() {
         centroDistribuicaoLuiza = new CentroDistribuicaoLuiza(500, 10000, 1250, 1250);
     }
-    
+
     @Test
-    void recebeAditivo(){
-        assertEquals(0, centroDistribuicaoLuiza.recebeAditivo(50)); 
+    void recebeAditivo() {
+        assertEquals(0, centroDistribuicaoLuiza.recebeAditivo(50));
     }
 
     @Test
-    void recebeGasolina(){
-        assertEquals(0, centroDistribuicaoLuiza.recebeGasolina(50)); 
+    void recebeGasolina() {
+        assertEquals(0, centroDistribuicaoLuiza.recebeGasolina(50));
     }
 
     @Test
-    void recebeAlcool(){
-        assertEquals(0, centroDistribuicaoLuiza.recebeAlcool(50)); 
+    void recebeAlcool() {
+        assertEquals(0, centroDistribuicaoLuiza.recebeAlcool(50));
     }
-    
+
+    @Test
+    void recebeAditivoNegativo() {
+        Assertions.assertNotEquals(0, centroDistribuicaoLuiza.recebeAditivo(-50));
+    }
+
+    @Test
+    void recebeGasolinaNegativo() {
+        Assertions.assertNotEquals(0, centroDistribuicaoLuiza.recebeGasolina(-50));
+    }
+    @Test
+    void recebeAlcoolNegativo() {
+        Assertions.assertNotEquals(0, centroDistribuicaoLuiza.recebeAlcool(-50));
+    }
 }
