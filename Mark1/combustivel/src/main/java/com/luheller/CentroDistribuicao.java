@@ -6,7 +6,7 @@ public class CentroDistribuicao {
     private int tAlcool1;
     private int tAlcool2;
     private SITUACAO situacao;
-
+    int qtdadeRecebida = 0;
     int porcentAditivo = (tAditivo * 100) / MAX_ADITIVO;
     int porcentGasolina = (tGasolina * 100) / MAX_GASOLINA;
     int porcentAlcool1 = (tAlcool1 * 100) / (MAX_ALCOOL / 2);
