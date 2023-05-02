@@ -18,12 +18,14 @@ public class CentroDistribuicaoLuiza {
     public static final int MAX_ADITIVO = 500;
     public static final int MAX_ALCOOL = 2500;
     public static final int MAX_GASOLINA = 10000;
+    private static final int IllegalArgumentException = 0;
 
     public CentroDistribuicaoLuiza(int tAditivo, int tGasolina, int tAlcool1, int tAlcool2) {
         this.tAditivo = tAditivo;
         this.tGasolina = tGasolina;
         this.tAlcool1 = tAlcool1;
         this.tAlcool2 = tAlcool2;
+        //colocar illegal argument exception
     }
 
     public void defineSituacao() {
@@ -40,6 +42,8 @@ public class CentroDistribuicaoLuiza {
                 && (tAlcool2 < (MAX_ALCOOL * 25) / 100) && (tGasolina < (MAX_GASOLINA * 25) / 100))) {
             situacao = SITUACAO.EMERGENCIA;
 
+        }else{
+            throw new IllegalArgumentException("Erro");
         }
     }
 
@@ -66,7 +70,7 @@ public class CentroDistribuicaoLuiza {
 
     public int recebeAditivo(int qtdadeRecebida) {
         if (qtdadeRecebida <= 0 || (qtdadeRecebida) > MAX_ADITIVO) {
-            return -1; // erro; quantidade invalida
+            return IllegalArgumentException; // erro; quantidade invalida
         }
         int espacoLivre = MAX_ADITIVO - this.tAditivo;
         int sobra = espacoLivre - qtdadeRecebida;// sobra é o espaço livre menos o que foi recebido, ou seja, mostra
@@ -128,46 +132,85 @@ public class CentroDistribuicaoLuiza {
     }
 
     public int[] encomendaCombustivel(int qtdadeSolicitada, TIPOPOSTO tipoPosto) {
-        int[] resultado = new int[4];
-        int pcAditivo = (tAditivo*5)/100;
-        int pcGasolina = (tGasolina*70)/100;
-        int pcAlcoolTotal = ((tAlcool1+tAlcool2)*25)/100;
-        int pcAlcool1 = pcAlcoolTotal/2;
-        int pcAlcool2 = pcAlcoolTotal/2;
+        if (qtdadeSolicitada <= 0 || (tipoPosto != TIPOPOSTO.COMUM && tipoPosto != TIPOPOSTO.ESTRATEGICO)) {
+            return new int[]{-1, tAditivo, tGasolina, tAlcool1, tAlcool2};
+        }
+        
+        int porcentAditivo = (tAditivo * 100) / MAX_ADITIVO;
+        int porcentGasolina = (tGasolina * 100) / MAX_GASOLINA;
+        int porcentAlcool1 = (tAlcool1 * 100) / (MAX_ALCOOL / 2);
+        int porcentAlcool2 = (tAlcool2 * 100) / (MAX_ALCOOL / 2);
 
-        if ((tAditivo > (MAX_ADITIVO*50)/100) && (tGasolina > (MAX_GASOLINA*50)/100) && (tAlcool1 > ((MAX_ALCOOL/2)*50)/100) && (tAlcool2 > ((MAX_ALCOOL/2)*50)/100) && tipoPosto == TIPOPOSTO.COMUM){
-            SITUACAO situacao = SITUACAO.NORMAL;
-            resultado[0] = tAditivo - pcAditivo; // subtração entre o que tinha no tanque, e a porcentagem que foi retirada para fazer a mistura de combustível
-            resultado[1] = tGasolina - pcGasolina;
-            resultado[2] = tAlcool1 - pcAlcool1;
-            resultado[3] = tAlcool2 - pcAlcool2;
+        int qtdGasolinaUsadaNaMistura = 0;
+        int qtdAlcoolUsadaNaMistura = 0;
+        int qtdAditivoUsadaNaMistura = 0;
+        
+        int restaGasolinaNoTanque = 0;
+        int restaAlcool1NoTanque = 0;
+        int restaAlcool2NoTanque = 0;
+        int restaAditivoNoTanque = 0;
+        
+
+        if (situacao == SITUACAO.NORMAL) {
+            if ((tipoPosto == TIPOPOSTO.COMUM)||(tipoPosto == TIPOPOSTO.ESTRATEGICO)){
+                qtdGasolinaUsadaNaMistura = (qtdadeSolicitada * 70) / 100;
+                qtdAlcoolUsadaNaMistura = (qtdadeSolicitada * 25) / 100;
+                qtdAditivoUsadaNaMistura = (qtdadeSolicitada * 5) / 100;
+
+                restaGasolinaNoTanque = tGasolina - qtdGasolinaUsadaNaMistura;
+                restaAlcool1NoTanque = tAlcool1 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAlcool2NoTanque = tAlcool2 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAditivoNoTanque = tAditivo - qtdAditivoUsadaNaMistura;
+
+                return new int[] {restaGasolinaNoTanque, restaAlcool1NoTanque, restaAlcool2NoTanque, restaAditivoNoTanque};
+            } 
+        }else if (situacao == SITUACAO.SOBRAVISO){
+            if(tipoPosto == TIPOPOSTO.COMUM){
+                qtdadeSolicitada = qtdadeSolicitada/2;
+                qtdGasolinaUsadaNaMistura = (qtdadeSolicitada * 70) / 100;
+                qtdAlcoolUsadaNaMistura = (qtdadeSolicitada * 25) / 100;
+                qtdAditivoUsadaNaMistura = (qtdadeSolicitada * 5) / 100;
+
+                restaGasolinaNoTanque = tGasolina - qtdGasolinaUsadaNaMistura;
+                restaAlcool1NoTanque = tAlcool1 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAlcool2NoTanque = tAlcool2 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAditivoNoTanque = tAditivo - qtdAditivoUsadaNaMistura;
+
+                return new int[] {restaGasolinaNoTanque, restaAlcool1NoTanque, restaAlcool2NoTanque, restaAditivoNoTanque};
+            }else if(tipoPosto == TIPOPOSTO.ESTRATEGICO){
+                qtdGasolinaUsadaNaMistura = (qtdadeSolicitada * 70) / 100;
+                qtdAlcoolUsadaNaMistura = (qtdadeSolicitada * 25) / 100;
+                qtdAditivoUsadaNaMistura = (qtdadeSolicitada * 5) / 100;
+
+                restaGasolinaNoTanque = tGasolina - qtdGasolinaUsadaNaMistura;
+                restaAlcool1NoTanque = tAlcool1 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAlcool2NoTanque = tAlcool2 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAditivoNoTanque = tAditivo - qtdAditivoUsadaNaMistura;
+
+                return new int[] {restaGasolinaNoTanque, restaAlcool1NoTanque, restaAlcool2NoTanque, restaAditivoNoTanque};
+            }
+        }else if(situacao == SITUACAO.EMERGENCIA) {
+            if (tipoPosto == TIPOPOSTO.COMUM) {
+                return new int[]{-21, tAditivo, tGasolina, tAlcool1, tAlcool2};
+            }
+            else if(tipoPosto == TIPOPOSTO.ESTRATEGICO){
+                qtdadeSolicitada = qtdadeSolicitada/2;
+                qtdGasolinaUsadaNaMistura = (qtdadeSolicitada * 70) / 100;
+                qtdAlcoolUsadaNaMistura = (qtdadeSolicitada * 25) / 100;
+                qtdAditivoUsadaNaMistura = (qtdadeSolicitada * 5) / 100;
+
+                restaGasolinaNoTanque = tGasolina - qtdGasolinaUsadaNaMistura;
+                restaAlcool1NoTanque = tAlcool1 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAlcool2NoTanque = tAlcool2 - (qtdAlcoolUsadaNaMistura / 2);
+                restaAditivoNoTanque = tAditivo - qtdAditivoUsadaNaMistura;
+
+                return new int[] {restaGasolinaNoTanque, restaAlcool1NoTanque, restaAlcool2NoTanque, restaAditivoNoTanque};
+            }
+        }else{
+            return new int[]{-14, tAditivo, tGasolina, tAlcool1, tAlcool2};
         }
-        else if ((tAditivo > (MAX_ADITIVO*50)/100) && (tGasolina > (MAX_GASOLINA*50)/100) && (tAlcool1 > ((MAX_ALCOOL/2)*50)/100) && (tAlcool2 > ((MAX_ALCOOL/2)*50)/100) && tipoPosto == TIPOPOSTO.ESTRATEGICO){
-            SITUACAO situacao = SITUACAO.NORMAL;
-            resultado[0] = tAditivo - pcAditivo; // subtração entre o que tinha no tanque, e a porcentagem que foi retirada para fazer a mistura de combustível
-            resultado[1] = tGasolina - pcGasolina;
-            resultado[2] = tAlcool1 - pcAlcool1;
-            resultado[3] = tAlcool2 - pcAlcool2;
+        return null;
+           
         }
-        else if ((tAditivo < (MAX_ADITIVO*50)/100) && (tAditivo > (MAX_ADITIVO*25/100)) && ((tGasolina< (MAX_GASOLINA*50)/100) && (tGasolina > (MAX_GASOLINA*25/100))) && ((tAlcool1 < ((MAX_ALCOOL/2)*50)/100) && (tAlcool1 > ((MAX_ALCOOL/2)*25/100))) && ((tAlcool2 < ((MAX_ALCOOL/2)*50)/100) && (tAlcool2 > ((MAX_ALCOOL/2)*25/100))) && tipoPosto == TIPOPOSTO.COMUM){
-            SITUACAO situacao = SITUACAO.SOBRAVISO;
-            qtdadeSolicitada = (qtdadeSolicitada*50)/100; // diminui a quantidade solicitada pela metade
-            resultado[0] = tAditivo - pcAditivo;
-            resultado[1] = tGasolina - pcGasolina;
-            resultado[2] = tAlcool1 - pcAlcool1;
-            resultado[3] = tAlcool2 - pcAlcool2;
-        }
-        else if ((tAditivo < (MAX_ADITIVO*50)/100) && (tAditivo > (MAX_ADITIVO*25/100)) && ((tGasolina< (MAX_GASOLINA*50)/100) && (tGasolina > (MAX_GASOLINA*25/100))) && ((tAlcool1 < ((MAX_ALCOOL/2)*50)/100) && (tAlcool1 > ((MAX_ALCOOL/2)*25/100))) && ((tAlcool2 < ((MAX_ALCOOL/2)*50)/100) && (tAlcool2 > ((MAX_ALCOOL/2)*25/100))) && tipoPosto == TIPOPOSTO.ESTRATEGICO){
-            SITUACAO situacao = SITUACAO.SOBRAVISO;
-            qtdadeSolicitada = (qtdadeSolicitada*50)/100; // diminui a quantidade solicitada pela metade
-            resultado[0] = tAditivo - pcAditivo;
-            resultado[1] = tGasolina - pcGasolina;
-            resultado[2] = tAlcool1 - pcAlcool1;
-            resultado[3] = tAlcool2 - pcAlcool2;
-        }
-        else{
-            resultado[0] = -1;
-        }
-        return resultado;
+
     }
-}

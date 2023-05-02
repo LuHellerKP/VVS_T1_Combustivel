@@ -1,0 +1,51 @@
+public int[] encomendaCombustivel(int quantidade, String tipoPosto) {
+    // Quantidades dos tanques (em litros)
+    int qtdAditivo = 500;
+    int qtdGasolina = 10000;
+    int qtdAlcool1 = 1250;
+    int qtdAlcool2 = 1250;
+
+    // Verifica se a quantidade é válida
+    if (quantidade <= 0) {
+        return new int[] {-7, qtdAditivo*100, qtdGasolina*100, qtdAlcool1*100, qtdAlcool2*100};
+    }
+
+    // Verifica a situação dos tanques
+    String situacao = verificarSituacaoTanques();
+    if (situacao.equals("EMERGENCIA")) {
+        return new int[] {-14, qtdAditivo*100, qtdGasolina*100, qtdAlcool1*100, qtdAlcool2*100};
+    } else if (situacao.equals("SOBRAVISO")) {
+        if (tipoPosto.equals("COMUM")) {
+            quantidade = quantidade / 2;
+        } else if (tipoPosto.equals("ESTRATEGICO") && quantidade > 0) {
+            quantidade = quantidade / 2;
+        }
+    }
+
+    // Calcula as quantidades de cada combustível necessárias
+    int qtdGasolinaPedido = (int) (quantidade * 0.7);
+    int qtdAlcoolPedido = (int) (quantidade * 0.25);
+    int qtdAditivoPedido = (int) (quantidade * 0.05);
+
+    // Verifica se há combustível suficiente para atender ao pedido
+    if (qtdGasolinaPedido > qtdGasolina || qtdAlcoolPedido > qtdAlcool1 + qtdAlcool2 || qtdAditivoPedido > qtdAditivo) {
+        return new int[] {-21, qtdAditivo*100, qtdGasolina*100, qtdAlcool1*100, qtdAlcool2*100};
+    }
+
+    // Atende ao pedido, atualizando as quantidades nos tanques
+    qtdAditivo -= qtdAditivoPedido;
+    qtdGasolina -= qtdGasolinaPedido;
+    int qtdAlcool2Pedido = qtdAlcoolPedido / 2;
+    int qtdAlcool1Pedido = qtdAlcoolPedido - qtdAlcool2Pedido;
+    qtdAlcool1 -= qtdAlcool1Pedido;
+    qtdAlcool2 -= qtdAlcool2Pedido;
+
+    // Retorna as quantidades remanescentes nos tanques
+    return new int[] {0, qtdAditivo*100, qtdGasolina*100, qtdAlcool1*100, qtdAlcool2*100};
+}
+
+// Verifica a situação dos tanques
+private String verificarSituacaoTanques() {
+    if (qtdAditivo < 125 || qtdGasolina < 2500 || qtdAlcool1 < 313 || qtdAlcool2 < 313) {
+        return "EMERGENCIA";
+    } else if (qtdAditivo < 250 || qtdGasolina < 5000 || qtdAlcool1 < 625 || qtdAlcool2

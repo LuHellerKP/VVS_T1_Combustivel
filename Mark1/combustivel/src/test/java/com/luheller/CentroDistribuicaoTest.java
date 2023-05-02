@@ -43,4 +43,14 @@ public class CentroDistribuicaoTest {
     void recebeAlcoolNegativo() {
         Assertions.assertNotEquals(0, centroDistribuicaoLuiza.recebeAlcool(-50));
     }
+
+    @Test
+    void recebeGasolinaAcimaDoLimiteDoTanque(){
+        Assertions.assertEquals(0, centroDistribuicaoLuiza.recebeGasolina(10000));
+    }
+
+    @Test
+    void recebeGasolinaAbaixoDeCinquentaPorcento(){
+
+    }
 }
